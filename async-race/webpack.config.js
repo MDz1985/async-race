@@ -3,8 +3,6 @@ const { merge } = require('webpack-merge');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
-
-
 const baseConfig = {
   entry: path.resolve(__dirname, './src/index.ts'),
   mode: 'development',
@@ -17,42 +15,43 @@ const baseConfig = {
         use: [
           {
             loader: 'html-loader',
-            options: {minimize: false}
-          }
-        ]
+            options: { minimize: false },
+          },
+        ],
       },
       {
         test: /\.(png|gif|svg|eot|ttf|json)$/,
         type: 'asset/resource',
         generator: {
-          filename: 'static/[hash][ext][query]'
-        }
+          filename: 'static/[hash][ext][query]',
+        },
       },
       {
         test: /\.(mp3|ogg)$/,
         type: 'asset/resource',
         generator: {
-          filename: 'audio/[hash][ext][query]'
-        }
+          filename: 'audio/[hash][ext][query]',
+        },
       },
       {
         test: /full.jpg$/,
         type: 'asset/resource',
         generator: {
-          filename: 'full/[hash][ext][query]'
-        }
+          filename: 'full/[hash][ext][query]',
+        },
       },
       {
         test: /\.s[ac]ss$/i,
-        use: ['style-loader', 'css-loader', "sass-loader",
+        use: [
+          'style-loader',
+          'css-loader',
+          'sass-loader',
           {
             loader: 'sass-resources-loader',
             options: {
-              resources:[
-                './src/styles/vars.scss',
-              ]
-            }
-          }
+              resources: ['./src/styles/vars.scss'],
+            },
+          },
         ],
       },
       {
@@ -67,7 +66,7 @@ const baseConfig = {
     ],
   },
   resolve: {
-    extensions: ['.js','.ts'],
+    extensions: ['.js', '.ts'],
   },
   output: {
     filename: 'index.js',
@@ -83,13 +82,15 @@ const baseConfig = {
   ],
   devServer: {
     compress: true,
-    port: 3000,
+    port: 8080,
   },
 };
 
 module.exports = ({ mode }) => {
   const isProductionMode = mode === 'prod';
-  const envConfig = isProductionMode ? require('./webpack.prod.config') : require('./webpack.dev.config');
+  const envConfig = isProductionMode
+    ? require('./webpack.prod.config')
+    : require('./webpack.dev.config');
 
   return merge(baseConfig, envConfig);
 };
