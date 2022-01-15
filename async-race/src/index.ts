@@ -10,4 +10,8 @@ console.log(cat.startStopEngine(1, 'stopped'));
 
 const garage = new Garage();
 garage.getCarsInGarageArray().then((r) => console.log(r));
-// Promise.resolve(garage.carsArray).then((value) => console.log(value));
+
+garage.deleteFromGarage(8);
+garage.addToGarage('alfaRomeo', '#56780');
+garage.getPageOfCars(2, 2);
+garage.updСarInf(5, 'Golf', '#444444');
