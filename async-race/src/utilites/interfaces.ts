@@ -14,7 +14,10 @@ export interface ICar {
 
   set name(carName: string);
 
-  startStopEngine(id: number, status: engineStatus): PromiseLike<engineStartStopPromise>;
+  startStopEngine(
+    id: number,
+    status: engineStatus
+  ): PromiseLike<engineStartStopPromise | undefined>;
 }
 
 export interface ICarFromGarage {

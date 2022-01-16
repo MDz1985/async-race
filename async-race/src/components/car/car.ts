@@ -1,6 +1,5 @@
 import { carColor, engineStartStopPromise, engineStatus } from '../../utilites/types';
 import { ICar } from '../../utilites/interfaces';
-import { json } from 'stream/consumers';
 import { urlObj } from '../../utilites/consts';
 
 const defaultColor = '#fffff';
@@ -33,9 +32,26 @@ export default class Car implements ICar {
       redirect: 'follow',
     };
     const requestValue = `?id=${id}&status=${status}`;
-    const res = await fetch(`${urlObj.engineUrl}${requestValue}`, requestOptions);
-    const runParametersObj = (await res.json()) as engineStartStopPromise;
-    return runParametersObj;
+    try {
+      const res = await fetch(`${urlObj.engineUrl}${requestValue}`, requestOptions);
+      return (await res.json()) as engineStartStopPromise;
+    } catch (error) {
+      console.log('error', error);
+    }
+  }
+
+  async goDrive(id: number) {
+    const status = 'drive';
+    const requestValue = `?id=${id}&status=${status}`;
+    const requestOptions: RequestInit = {
+      method: 'PATCH',
+      redirect: 'follow',
+    };
+
+    fetch(`${urlObj.engineUrl}${requestValue}`, requestOptions)
+      .then((response) => response.text())
+      .then((result) => console.log(result))
+      .catch((error) => console.log('error', error));
   }
 
   private _color: carColor;
