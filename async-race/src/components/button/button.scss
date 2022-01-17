@@ -1,0 +1,8 @@
+.button{
+  width: 120px;
+  &:hover{
+    color: #69db7e;
+    box-shadow: 0 0.5em 0.5em -0.4em #3fcc59;
+    transform: translateY(-0.25em);
+  }
+}

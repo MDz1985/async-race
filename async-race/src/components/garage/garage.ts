@@ -11,7 +11,7 @@ export class Garage {
     return this.carsArray as Promise<ICarFromGarage[]>;
   }
 
-  async updСarInf(id: number, newName?: string, newColor?: `#${number}`) {
+  async updCarInf(id: number, newName?: string, newColor?: `#${number}`) {
     const myHeaders = new Headers();
     myHeaders.append('Content-Type', 'application/json');
 

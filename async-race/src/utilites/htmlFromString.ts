@@ -1,5 +1,5 @@
-export default function (htmlFromString: string): HTMLElement {
+export default function (htmlFromString: string) {
   const template = document.createElement('template');
   template.innerHTML = htmlFromString;
-  return template as HTMLElement;
+  return template.content as DocumentFragment;
 }
