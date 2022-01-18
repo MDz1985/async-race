@@ -18,17 +18,17 @@ body.append(header, garageMainElement);
 // console.log(a);
 // body.append(carElement);
 
-const cat = new Car('#889900', 'Tesla');
-console.log(cat);
-cat.color = '#888';
-console.log(cat.color, cat.name);
-console.log(cat.startStopEngine(1, 'stopped'));
+// const cat = new Car('#889900', 'Tesla');
+// console.log(cat);
+// cat.color = '#888';
+// console.log(cat.color, cat.name);
+// console.log(cat.startStopEngine(1, 'stopped'));
 
 const garage = new Garage();
-garage.getCarsInGarageArray().then((r) => console.log(r));
-
-garage.deleteFromGarage(8);
-garage.addToGarage('alfaRomeo', '#56780');
-garage.getPageOfCars(2, 2);
-garage.updCarInf(5, 'Golf', '#444444');
-cat.startStopEngine(1, 'started').then(() => cat.goDrive(1));
+// garage.getCarsInGarageArray().then((r) => console.log(r));
+//
+// garage.deleteFromGarage(8);
+// garage.addToGarage('alfaRomeo', '#56780');
+// garage.getPageOfCars(2, 2);
+// garage.updCarInf(5, 'Golf', '#444444');
+// cat.startStopEngine(1, 'started').then(() => cat.goDrive(1));

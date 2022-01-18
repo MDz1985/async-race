@@ -1,3 +1,4 @@
+import './car.scss';
 import { carColor, engineStartStopPromise, engineStatus } from '../../utilites/types';
 import { ICar } from '../../utilites/interfaces';
 import { urlObj } from '../../utilites/consts';

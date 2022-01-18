@@ -65,27 +65,47 @@ export class Garage {
       .catch((error) => console.log('error', error));
   }
 
-  async getCarById(id: number): Promise<void> {
+  async getCarById(id: number): Promise<ICarFromGarage | void> {
     const requestOptions: RequestInit = {
       method: 'GET',
       redirect: 'follow',
     };
 
-    fetch(`${urlObj.garageUrl}/${id}`, requestOptions)
-      .then((response) => response.text())
-      .then((result) => console.log(result))
+    return fetch(`${urlObj.garageUrl}/${id}`, requestOptions)
+      .then((response) => response.json())
+      .then((result) => {
+        console.log(result);
+        return result;
+      })
       .catch((error) => console.log('error', error));
   }
 
-  async getPageOfCars(page: number, limitPerPage: number) {
+  async getPageOfCars(page: number, limitPerPage: number): Promise<ICarFromGarage[] | void> {
     const requestOptions: RequestInit = {
       method: 'GET',
       redirect: 'follow',
     };
     const queryParams = `?_page=${page}&_limit=${limitPerPage}`;
-    fetch(`${urlObj.garageUrl}${queryParams}`, requestOptions)
-      .then((response) => response.text())
-      .then((result) => console.log(result))
+    return fetch(`${urlObj.garageUrl}${queryParams}`, requestOptions)
+      .then((response) => response.json())
+      .then((result) => {
+        return result;
+        console.log(result);
+      })
+      .catch((error) => console.log('error', error));
+  }
+
+  async getAllCars(): Promise<ICarFromGarage[] | void> {
+    const requestOptions: RequestInit = {
+      method: 'GET',
+      redirect: 'follow',
+    };
+    return fetch(`${urlObj.garageUrl}`, requestOptions)
+      .then((response) => response.json())
+      .then((result) => {
+        console.log(result);
+        return result;
+      })
       .catch((error) => console.log('error', error));
   }
 }
