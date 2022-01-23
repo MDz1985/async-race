@@ -1,5 +1,16 @@
 .track {
+  position: relative;
   height: 80px;
   border-top: red 3px dashed;
   border-bottom: red 3px dashed;
+
+  &::after {
+    position: absolute;
+    content: '';
+    left: 77vw;
+    width: 10px;
+    height: 75px;
+    background: black;
+
+  }
 }

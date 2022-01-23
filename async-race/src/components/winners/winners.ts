@@ -65,13 +65,13 @@ export class Winners {
       .catch((error) => console.log('error', error));
   }
 
-  async updateWinner(id: number) {
+  async updateWinner(id: number, wins: number, time: number) {
     const myHeaders = new Headers();
     myHeaders.append('Content-Type', 'application/json');
 
     const raw = JSON.stringify({
-      wins: 5,
-      time: 1,
+      wins: wins,
+      time: time,
     });
 
     const requestOptions: RequestInit = {

@@ -14,14 +14,30 @@ export interface ICar {
 
   set name(carName: string);
 
-  startStopEngine(
-    id: number,
-    status: engineStatus
-  ): PromiseLike<engineStartStopPromise | undefined>;
+  // startStopEngine(
+  //   id: number,
+  //   status: engineStatus
+  // ): PromiseLike<engineStartStopPromise | undefined>;
 }
 
 export interface ICarFromGarage {
   name: string;
   color: `#${string}`;
-  id: 1;
+  id: number;
+}
+
+export interface IonClickFunctionsObj {
+  select: (id: number) => Promise<engineStartStopPromise | undefined>;
+  remove: (id: number) => Promise<void>;
+  race: (id: number) => Promise<void | IgoDrivePromise>;
+  stop: (id: number) => Promise<engineStartStopPromise | undefined>;
+}
+
+export interface IEnginePromise {
+  velocity: number;
+  distance: number;
+}
+
+export interface IgoDrivePromise {
+  success: true;
 }
