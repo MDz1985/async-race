@@ -1,11 +1,11 @@
 import { urlObj } from '../../utilites/consts';
 import { IEnginePromise, ICarFromGarage, IgoDrivePromise } from '../../utilites/interfaces';
-import { engineStartStopPromise } from '../../utilites/types';
+import { carColor } from '../../utilites/types';
 
 export class Garage {
   // carsArray: Promise<ICarFromGarage[]> | undefined;
 
-  async updateCarInfo(id: number, newName?: string, newColor?: `#${number}`) {
+  async updateCarInfo(id: number, newName?: string, newColor?: carColor) {
     const myHeaders = new Headers();
     myHeaders.append('Content-Type', 'application/json');
 
@@ -89,18 +89,21 @@ export class Garage {
       .catch((error) => console.log('error', error));
   }
 
-  async getAllCars(): Promise<ICarFromGarage[] | void> {
+  async getAllCars(): Promise<ICarFromGarage[]> {
     const requestOptions: RequestInit = {
       method: 'GET',
       redirect: 'follow',
     };
-    return fetch(`${urlObj.garageUrl}`, requestOptions)
-      .then((response) => response.json())
-      .then((result) => {
-        console.log(result);
-        return result;
-      })
-      .catch((error) => console.log('error', error));
+    return fetch(`${urlObj.garageUrl}`, requestOptions).then((response) => {
+      if (response.ok) {
+        return response.json();
+      } else return Promise.reject('error');
+      // response.json();
+    });
+    // .then((result) => {
+    //   return result;
+    // });
+    // .catch((error) => console.log('error', error));
   }
 
   async startEngine(id: number): Promise<IEnginePromise | number> {
@@ -110,38 +113,26 @@ export class Garage {
     };
     const requestValue = `?id=${id}&status=started`;
     return fetch(`${urlObj.engineUrl}${requestValue}`, requestOptions).then((response) => {
-      // response.json())
       if (response.ok) {
         return response.json();
       } else return response.status;
     });
-    // .then((result) => {
-    //   return result as IEnginePromise | number;
-    // });
-    // .then((result) => {
-    //   console.log(result);
-    //   return result;
-    // })
-    // .catch((error) => console.log('error', error));
   }
 
-  async stopEngine(id: number): Promise<engineStartStopPromise | undefined> {
+  async stopEngine(id: number): Promise<IEnginePromise | number> {
     const requestOptions: RequestInit = {
       method: 'PATCH',
       redirect: 'follow',
     };
     const requestValue = `?id=${id}&status=stopped`;
-    try {
-      const res = await fetch(`${urlObj.engineUrl}${requestValue}`, requestOptions);
-      const result = await res.json();
-      console.log(result);
-      return result as engineStartStopPromise;
-    } catch (error) {
-      console.log('error', error);
-    }
+    return fetch(`${urlObj.engineUrl}${requestValue}`, requestOptions).then((response) => {
+      if (response.ok) {
+        return response.json();
+      } else return response.status;
+    });
   }
 
-  async goDrive(id: number): Promise<number | IgoDrivePromise> {
+  async goDrive(id: number): Promise<Response> {
     const status = 'drive';
     const requestValue = `?id=${id}&status=${status}`;
     const requestOptions: RequestInit = {
@@ -149,17 +140,18 @@ export class Garage {
       redirect: 'follow',
     };
 
-    return fetch(`${urlObj.engineUrl}${requestValue}`, requestOptions)
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        } else return response.status;
-      })
-      .then((result) => {
-        return result as IgoDrivePromise | number;
-      });
-    // .catch((error) => {
-    //   return error.status;
+    return fetch(`${urlObj.engineUrl}${requestValue}`, requestOptions).then((response) => {
+      if (response.ok) {
+        return response;
+      } else return Promise.reject('error');
+    });
+    // .then((response) => {
+    // if (response.ok) {
+    //   return response.json();
+    // } else return response.status;
+    // });
+    // .then((result) => {
+    //   return result as IgoDrivePromise | number;
     // });
   }
 }

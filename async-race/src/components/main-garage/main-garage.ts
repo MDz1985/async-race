@@ -5,21 +5,18 @@ import { Button } from '../button/button';
 import Track from './carTrack/carTrack';
 import { Garage } from '../garage/garage';
 import { carColor } from '../../utilites/types';
-import { IEnginePromise, ICarFromGarage } from '../../utilites/interfaces';
+import { ICarFromGarage, IEnginePromise, IgoDrivePromise } from '../../utilites/interfaces';
 import { limitPerPage } from '../../utilites/consts';
-import { target } from 'nouislider';
 
 const fragment: DocumentFragment = htmlFromString(garageTextFromHtml);
 const garageMainElement = fragment.querySelector('.main') as HTMLElement;
 const carsTracksDiv = garageMainElement.querySelector('.tracks-container') as HTMLDivElement;
 const nameInput = garageMainElement.querySelector('.name_input') as HTMLInputElement;
 const colorInput = garageMainElement.querySelector('.color_input') as HTMLInputElement;
-const carMenuCreateLiElement = garageMainElement.querySelector(
-  '.create-cars-menu'
-) as HTMLLIElement;
-const carMenuUpdateLiElement = garageMainElement.querySelector(
-  '.update-cars-menu'
-) as HTMLLIElement;
+const nameInputChange = garageMainElement.querySelector('.change-name_input') as HTMLInputElement;
+const colorInputChange = garageMainElement.querySelector('.change-color_input') as HTMLInputElement;
+const carMenuCreateLiElement = garageMainElement.querySelector('.create-cars-menu') as HTMLLIElement;
+const carMenuUpdateLiElement = garageMainElement.querySelector('.update-cars-menu') as HTMLLIElement;
 const controlsMenu = garageMainElement.querySelector('.race-menu') as HTMLLIElement;
 
 const garageMainButtons = new Button();
@@ -29,23 +26,37 @@ const trackInstance = new Track();
 const carTrack = (name: string, color: carColor) => {
   return trackInstance.createTrack(color, name) as Node;
 };
+const prevButton = garageMainButtons.createReadyButtonElement('Prev', () => {
+  if (race.currentPage > 1) {
+    race.currentPage--;
+    race.setCurrentPageOfCars();
+  }
+});
+const nextButton = garageMainButtons.createReadyButtonElement('Next', () => {
+  if (race.currentPage < race.pagesCount()) {
+    race.currentPage++;
+    race.setCurrentPageOfCars();
+  }
+});
 
 let animationID: number;
+
 class Race extends Garage {
   currentPage = 1;
+  selectedCarId = 0;
+  private carsCount = 0;
+  pagesCount: () => number = () => this.carsCount / limitPerPage;
 
   private displayPagesNumber() {
-    const pagesNumberSpan = garageMainElement.querySelector(
-      '.garage__page-number'
-    ) as HTMLSpanElement;
+    const pagesNumberSpan = garageMainElement.querySelector('.garage__page-number') as HTMLSpanElement;
     pagesNumberSpan.innerText = ` #${this.currentPage}`;
   }
 
   private displayCarsCount() {
     const carsCountSpan = garageMainElement.querySelector('.garage__cars-count') as HTMLSpanElement;
     this.getAllCars().then((result) => {
-      const carsCount = (<ICarFromGarage[]>result).length;
-      carsCountSpan.innerText = ` (${carsCount})`;
+      this.carsCount = (<ICarFromGarage[]>result).length;
+      carsCountSpan.innerText = ` (${this.carsCount})`;
     });
   }
 
@@ -61,33 +72,24 @@ class Race extends Garage {
         const buttons = track.querySelectorAll('.button') as NodeListOf<HTMLElement>;
         const car = track.querySelector('.car-svg') as HTMLElement;
         buttons[3].className = 'rottom';
-        buttonsBox.addEventListener('click', (event) =>
-          this.onClickFunction(event, buttons, car, value.id)
-        );
+        buttonsBox.addEventListener('click', (event) => this.onClickFunction(event, buttons, car, value.id));
         carsTracksDiv.append(track);
       });
+      carsTracksDiv.append(prevButton, nextButton);
     });
   }
 
-  // isEngineWork = { id: 0, result: false, time: 0 };
-
-  time = [{ id: 0, time: 0 }];
-
-  private onClickFunction(
-    event: Event,
-    buttons: NodeListOf<HTMLElement>,
-    car: HTMLElement,
-    id: number
-  ) {
+  private onClickFunction(event: Event, buttons: NodeListOf<HTMLElement>, car: HTMLElement, id: number) {
     const target = event.target as HTMLButtonElement;
     switch (target) {
       case buttons[0]:
         this.startEngine(id).then((result) => {
           if (typeof result !== 'number') {
-            console.log('select', id);
-            const duration = result.distance / result.velocity;
-            this.time.push({ id: id, time: duration });
-            buttons[3].className = 'button';
+            this.getCarById(id).then((result) => {
+              this.selectedCarId = id;
+              nameInputChange.value = (<ICarFromGarage>result).name;
+              colorInputChange.value = (<ICarFromGarage>result).color;
+            });
           }
         });
         break;
@@ -99,41 +101,73 @@ class Race extends Garage {
         this.startEngine(id)
           .then((result) => {
             if (typeof result !== 'number') {
-              console.log('select', id, result);
               const duration = result.distance / result.velocity;
               (<HTMLElement>target).className = 'roottom';
               animateCarDrive(car, draw, duration);
               return this.goDrive(id);
             }
           })
-          .then((promise) => {
-            if (promise === 500) {
-              console.log('stop', car.style.left, animationID);
-              // const b: string = car.style.left;
+          .then(
+            (promise) => {
+              buttons[3].className = 'button';
+            },
+            () => {
               cancelAnimationFrame(animationID);
-              // car.style.left = b;
+              buttons[3].className = 'button';
             }
-            buttons[3].className = 'button';
-            console.log(promise);
-          });
+          );
 
         break;
       case buttons[3]:
-        console.log(4);
-        this.stopEngine(id);
-        (<HTMLElement>target).className = 'roottom';
-        (<HTMLElement>buttons[2]).className = 'button';
-        car.style.left = '';
+        if (buttons[3].className === 'button') {
+          this.stopEngine(id).then((result) => {
+            if (<IEnginePromise>result) {
+              (<HTMLElement>target).className = 'roottom';
+              (<HTMLElement>buttons[2]).className = 'button';
+              car.style.left = '';
+            }
+          });
+        }
         break;
     }
   }
+
+  // duarationArray: { id: number; duaration: number }[] = [{ id: 0, duaration: 9999999999 }];
+
+  raceCar(id: number, indexNumber: number) {
+    const carsArray = document.querySelectorAll('.car-svg') as NodeListOf<HTMLElement>;
+    const car = carsArray[indexNumber] as HTMLElement;
+    let duration: number;
+    return this.startEngine(id)
+      .then((result) => {
+        if (typeof result !== 'number') {
+          duration = result.distance / result.velocity;
+          animateCarDrive(car, draw, duration);
+          return this.goDrive(id);
+        }
+      })
+      .then(
+        (value) => {
+          return { id: id, duration: duration };
+        },
+        (error) => {
+          cancelAnimationFrame(animationID);
+          return Promise.reject('error');
+        }
+      );
+  }
+
+  resetCarEngineStatus(id: number, indexNumber: number) {
+    const carsArray = document.querySelectorAll('.car-svg') as NodeListOf<HTMLElement>;
+    const car = carsArray[indexNumber] as HTMLElement;
+    cancelAnimationFrame(animationID);
+    this.stopEngine(id).then(() => {
+      car.style.left = '';
+    });
+  }
 }
 
-function animateCarDrive(
-  car: HTMLElement,
-  draw: (progress: number, element: HTMLElement) => void,
-  duration: number
-) {
+function animateCarDrive(car: HTMLElement, draw: (progress: number, element: HTMLElement) => void, duration: number) {
   const start = performance.now();
 
   function linear(timeFraction: number) {
@@ -146,7 +180,6 @@ function animateCarDrive(
     const progress = linear(timeFraction);
     draw(progress, car);
     if (timeFraction < 1) {
-      // requestAnimationFrame(animate);
       animationID = requestAnimationFrame(animate);
     }
   });
@@ -155,10 +188,6 @@ function animateCarDrive(
 function draw(progress: number, element: HTMLElement) {
   element.style.left = progress * 80 + 'vw';
 }
-// function df(progress: number, element: HTMLElement) {
-//   const b = element.style.left;
-//   element.style.left = b;
-// }
 
 const race = new Race();
 race.setCurrentPageOfCars();
@@ -175,19 +204,50 @@ const buttonCreate = garageMainButtons.createReadyButtonElement('create', () => 
   } else console.log('no name');
 });
 const buttonUpdate = garageMainButtons.createReadyButtonElement('update', () => {
-  console.log('update');
-  race.getAllCars().then((result) => {
-    race
-      .deleteFromGarage((<ICarFromGarage[]>result).length)
-      .then(() => race.setCurrentPageOfCars());
+  const name = nameInputChange.value;
+  const black: carColor = '#000000';
+  const color = <carColor>colorInputChange.value;
+  race.updateCarInfo(race.selectedCarId, name, color).then(() => race.setCurrentPageOfCars());
+  colorInputChange.value = black;
+  nameInputChange.value = '';
+  race.selectedCarId = 0;
+  race.setCurrentPageOfCars();
+});
+
+// let arrayOfPromises: Promise<IgoDrivePromise>[];
+const buttonRace = garageMainButtons.createReadyButtonElement('race', () => {
+  const superarray: Promise<{ duration: number; id: number }>[] = [];
+  let arrayOfCars: ICarFromGarage[];
+
+  race.getPageOfCars(race.currentPage, limitPerPage).then((result) => {
+    arrayOfCars = <ICarFromGarage[]>result;
+    (<ICarFromGarage[]>result).forEach((value, index) => {
+      setTimeout(() => superarray.push(<Promise<{ duration: number; id: number }>>race.raceCar(value.id, index)));
+    });
+    setTimeout(() =>
+      Promise.any(superarray).then((value) => {
+        const winnerText = `Winner: ${(<ICarFromGarage>arrayOfCars.find((ICar) => ICar.id === value.id)).name} ${
+          Math.floor(value.duration / 100) / 10
+        } sec`;
+        console.log(winnerText);
+        const winnerButton = garageMainButtons.createReadyButtonElement(winnerText, () => {
+          garageMainElement.removeChild(winnerButton);
+        });
+        winnerButton.className = 'winner-button';
+        garageMainElement.append(winnerButton);
+      })
+    );
   });
 });
 
-const buttonRace = garageMainButtons.createReadyButtonElement('race', () => console.log('race'));
-const buttonReset = garageMainButtons.createReadyButtonElement('reset', () => console.log('reset'));
-const buttonGenerate = garageMainButtons.createReadyButtonElement('generate', () =>
-  console.log('generate')
-);
+const buttonReset = garageMainButtons.createReadyButtonElement('reset', () => {
+  race.getPageOfCars(race.currentPage, limitPerPage).then((result) => {
+    (<ICarFromGarage[]>result).forEach((value, index) => {
+      race.resetCarEngineStatus(value.id, index);
+    });
+  });
+});
+const buttonGenerate = garageMainButtons.createReadyButtonElement('generate', () => console.log('generate'));
 
 controlsMenu.append(buttonRace, buttonReset, buttonGenerate);
 

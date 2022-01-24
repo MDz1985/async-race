@@ -4,4 +4,4 @@ export const urlObj = {
   winnersUrl: 'http://127.0.0.1:3000/winners',
 };
 
-export const limitPerPage = 15;
+export const limitPerPage = 10;
