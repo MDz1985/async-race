@@ -1,6 +1,4 @@
 import './button.scss';
-import { color } from '../../utilites/types';
-import { IButton } from '../../utilites/interfaces';
 
 export class Button {
   // private color: color;

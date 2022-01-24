@@ -2,16 +2,10 @@ import './carTrack.scss';
 import carTrackElementText from './carTrack.html';
 import htmlFromString from '../../../utilites/htmlFromString';
 import Car from '../../car/car';
-import { carColor, engineStartStopPromise, engineStatus } from '../../../utilites/types';
+import { carColor, engineStartStopPromise } from '../../../utilites/types';
 import { Button } from '../../button/button';
 import { urlObj } from '../../../utilites/consts';
-import {
-  IEnginePromise,
-  IgoDrivePromise,
-  IonClickFunctionsObj,
-} from '../../../utilites/interfaces';
-
-// const buttons = new Button();
+import { IgoDrivePromise, IonClickFunctionsObj } from '../../../utilites/interfaces';
 
 class Track extends Button {
   private carInstance: Car | undefined;

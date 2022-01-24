@@ -1,4 +1,4 @@
-import { carColor, color, engineStartStopPromise, engineStatus } from './types';
+import { carColor, color, engineStartStopPromise } from './types';
 
 export interface IButton {
   color: color;
@@ -13,11 +13,6 @@ export interface ICar {
   get name(): string;
 
   set name(carName: string);
-
-  // startStopEngine(
-  //   id: number,
-  //   status: engineStatus
-  // ): PromiseLike<engineStartStopPromise | undefined>;
 }
 
 export interface ICarFromGarage {
@@ -40,4 +35,10 @@ export interface IEnginePromise {
 
 export interface IgoDrivePromise {
   success: true;
+}
+
+export interface IgetWinnersPromise {
+  id: number;
+  wins: number;
+  time: number;
 }

@@ -1,10 +1,8 @@
 import { urlObj } from '../../utilites/consts';
-import { IEnginePromise, ICarFromGarage, IgoDrivePromise } from '../../utilites/interfaces';
+import { IEnginePromise, ICarFromGarage } from '../../utilites/interfaces';
 import { carColor } from '../../utilites/types';
 
 export class Garage {
-  // carsArray: Promise<ICarFromGarage[]> | undefined;
-
   async updateCarInfo(id: number, newName?: string, newColor?: carColor) {
     const myHeaders = new Headers();
     myHeaders.append('Content-Type', 'application/json');
@@ -55,7 +53,7 @@ export class Garage {
 
     fetch(urlObj.garageUrl, requestOptions)
       .then((response) => response.text())
-      .then((result) => console.log(result))
+      // .then((result) => console.log(result))
       .catch((error) => console.log('error', error));
   }
 
@@ -68,7 +66,6 @@ export class Garage {
     return fetch(`${urlObj.garageUrl}/${id}`, requestOptions)
       .then((response) => response.json())
       .then((result) => {
-        console.log(result);
         return result;
       })
       .catch((error) => console.log('error', error));
@@ -98,12 +95,7 @@ export class Garage {
       if (response.ok) {
         return response.json();
       } else return Promise.reject('error');
-      // response.json();
     });
-    // .then((result) => {
-    //   return result;
-    // });
-    // .catch((error) => console.log('error', error));
   }
 
   async startEngine(id: number): Promise<IEnginePromise | number> {
