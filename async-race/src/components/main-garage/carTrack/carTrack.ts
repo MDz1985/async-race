@@ -17,7 +17,7 @@ class Track extends Button {
   onClickFunctionsObj: IonClickFunctionsObj = {
     select: this.startEngine,
     remove: this.deleteFromGarage,
-    race: this.goDrive,
+    start: this.goDrive,
     stop: this.stopEngine,
   };
 
@@ -32,7 +32,7 @@ class Track extends Button {
     const car = this.carInstance.returnCarElement() as DocumentFragment;
     const arrayOfButtons = this.createArrayOfButtonsForTrack();
     nameOfCarSpan.innerText = name;
-    arrayOfButtons.forEach((value) => buttonsDiv.append(value));
+    arrayOfButtons.forEach((buttonElement) => buttonsDiv.append(buttonElement));
     trackDiv.append(car);
     return fragment;
   }

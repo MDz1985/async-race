@@ -66,11 +66,44 @@ export class Race extends Winners {
         const buttonsBox = track.querySelector('.track-control__buttons') as HTMLDivElement;
         const buttons = track.querySelectorAll('.button') as NodeListOf<HTMLElement>;
         const car = track.querySelector('.car-svg') as HTMLElement;
-        buttons[3].className = 'rottom';
+        buttons[3].classList.add('inactive-button');
         buttonsBox.addEventListener('click', (event) => this.onClickFunction(event, buttons, car, value.id));
         carsTracksDiv.append(track);
       });
       carsTracksDiv.append(prevButton, nextButton);
+      race.changeStartStopButtonsStatus('reset');
+    });
+  }
+
+  changeStartStopButtonsStatus(status: 'start' | 'stop' | 'reset') {
+    const startButtons = document.querySelectorAll('.start') as NodeListOf<HTMLButtonElement>;
+    const stopButtons = document.querySelectorAll('.stop') as NodeListOf<HTMLButtonElement>;
+    switch (status) {
+      case 'start':
+        this.changeButtonstatusToInactive(startButtons);
+        this.changeButtonstatusToInactive(stopButtons);
+        break;
+      case 'stop':
+        this.changeButtonstatusToActive(stopButtons);
+        break;
+      case 'reset':
+        this.changeButtonstatusToActive(startButtons);
+        this.changeButtonstatusToInactive(stopButtons);
+        break;
+    }
+  }
+
+  private changeButtonstatusToActive(buttons: NodeListOf<HTMLButtonElement>) {
+    buttons.forEach((buttonElement) => {
+      buttonElement.classList.remove('inactive-button');
+      buttonElement.classList.add('button');
+    });
+  }
+
+  private changeButtonstatusToInactive(buttons: NodeListOf<HTMLButtonElement>) {
+    buttons.forEach((buttonElement) => {
+      buttonElement.classList.add('inactive-button');
+      buttonElement.classList.remove('button');
     });
   }
 
@@ -90,6 +123,7 @@ export class Race extends Winners {
         break;
       case buttons[1]:
         this.deleteFromGarage(id);
+        this.deleteWinner(id);
         this.setCurrentPageOfCars();
         break;
       case buttons[2]:
@@ -97,28 +131,33 @@ export class Race extends Winners {
           .then((result) => {
             if (typeof result !== 'number') {
               const duration = result.distance / result.velocity;
-              (<HTMLElement>target).className = 'roottom';
+              (<HTMLElement>target).classList.add('inactive-button');
+              (<HTMLElement>target).classList.remove('button');
               animateCarDrive(car, draw, duration);
               return this.goDrive(id);
             }
           })
           .then(
             () => {
-              buttons[3].className = 'button';
+              buttons[3].classList.add('button');
+              buttons[3].classList.remove('inactive-button');
             },
             () => {
               cancelAnimationFrame(animationID);
-              buttons[3].className = 'button';
+              buttons[3].classList.add('button');
+              buttons[3].classList.remove('inactive-button');
             }
           );
 
         break;
       case buttons[3]:
-        if (buttons[3].className === 'button') {
+        if (buttons[3].className.includes('button')) {
           this.stopEngine(id).then((result) => {
             if (<IEnginePromise>result) {
-              (<HTMLElement>target).className = 'roottom';
-              (<HTMLElement>buttons[2]).className = 'button';
+              (<HTMLElement>target).classList.add('inactive-button');
+              (<HTMLElement>target).classList.remove('button');
+              (<HTMLElement>buttons[2]).classList.add('button');
+              (<HTMLElement>buttons[2]).classList.remove('inactive-button');
               car.style.left = '';
             }
           });
@@ -247,6 +286,7 @@ const buttonUpdate = garageMainButtons.createReadyButtonElement('update', () => 
 const buttonRace = garageMainButtons.createReadyButtonElement('race', () => {
   const superarray: Promise<{ duration: number; id: number }>[] = [];
   let arrayOfCars: ICarFromGarage[];
+  race.changeStartStopButtonsStatus('start');
 
   race.getPageOfCars(race.currentPage, carsPerPageLimit).then((result) => {
     arrayOfCars = <ICarFromGarage[]>result;
@@ -260,6 +300,7 @@ const buttonRace = garageMainButtons.createReadyButtonElement('race', () => {
         console.log(winnerText);
         const winnerButton = garageMainButtons.createReadyButtonElement(winnerText, () => {
           garageMainElement.removeChild(winnerButton);
+          race.changeStartStopButtonsStatus('stop');
         });
         winnerButton.className = 'winner-button';
         garageMainElement.append(winnerButton);
@@ -270,11 +311,13 @@ const buttonRace = garageMainButtons.createReadyButtonElement('race', () => {
 });
 
 race.getAllCars();
+race.changeStartStopButtonsStatus('reset');
 
 const buttonReset = garageMainButtons.createReadyButtonElement('reset', () => {
   race.getPageOfCars(race.currentPage, carsPerPageLimit).then((result) => {
     (<ICarFromGarage[]>result).forEach((value, index) => {
       race.resetCarEngineStatus(value.id, index);
+      race.changeStartStopButtonsStatus('reset');
     });
   });
 });

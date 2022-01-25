@@ -24,7 +24,7 @@ export interface ICarFromGarage {
 export interface IonClickFunctionsObj {
   select: (id: number) => Promise<engineStartStopPromise | undefined>;
   remove: (id: number) => Promise<void>;
-  race: (id: number) => Promise<void | IgoDrivePromise>;
+  start: (id: number) => Promise<void | IgoDrivePromise>;
   stop: (id: number) => Promise<engineStartStopPromise | undefined>;
 }
 

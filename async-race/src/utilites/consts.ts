@@ -4,7 +4,7 @@ export const urlObj = {
   winnersUrl: 'http://127.0.0.1:3000/winners',
 };
 
-export const carsPerPageLimit = 10;
+export const carsPerPageLimit = 7;
 export const winnersPerPageLimit = 10;
 export const randomCarsCount = 100;
 

@@ -13,7 +13,7 @@ export class Button {
   createReadyButtonElement(innerText: string, onClickFunction?: () => void): HTMLButtonElement {
     const newButtonElement = document.createElement('button');
     newButtonElement.innerText = innerText;
-    newButtonElement.className = 'button';
+    newButtonElement.className = `button ${innerText}`;
     if (onClickFunction) {
       newButtonElement.addEventListener('click', onClickFunction);
     }
