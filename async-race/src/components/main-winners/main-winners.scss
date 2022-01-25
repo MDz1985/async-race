@@ -1,5 +1,6 @@
 .winners__table{
   width: 400px;
+  margin-bottom: 5px;
   .table__head{
     background: #617aab;
   }
@@ -9,6 +10,11 @@
       padding: 7px;
       border: 1px solid black;
     }
+  }
+  .number_title,
+  .time_title,
+  .wins_title {
+    cursor: pointer;
   }
 
 }

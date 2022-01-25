@@ -57,9 +57,9 @@ export class Race extends Winners {
   }
 
   setCurrentPageOfCars() {
+    this.displayPagesNumber();
+    this.displayCarsCount();
     this.getPageOfCars(this.currentPage, carsPerPageLimit).then((result) => {
-      this.displayPagesNumber();
-      this.displayCarsCount();
       carsTracksDiv.innerHTML = '';
       (<ICarFromGarage[]>result).forEach((value) => {
         const track = trackInstance.createTrack(value.color, value.name);

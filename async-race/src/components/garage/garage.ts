@@ -137,13 +137,5 @@ export class Garage {
         return response;
       } else return Promise.reject('error');
     });
-    // .then((response) => {
-    // if (response.ok) {
-    //   return response.json();
-    // } else return response.status;
-    // });
-    // .then((result) => {
-    //   return result as IgoDrivePromise | number;
-    // });
   }
 }

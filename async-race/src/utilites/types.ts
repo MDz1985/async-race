@@ -6,3 +6,5 @@ export type engineStartStopPromise = {
   velocity: number;
   distance: number;
 };
+
+export type sort = 'id' | 'wins' | 'time';
