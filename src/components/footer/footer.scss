@@ -1,0 +1,27 @@
+.footer {
+  position: fixed;
+  bottom: 0;
+  width: 100vw;
+  height: 7vh;
+  background: $footerBg;
+  color: #ffffff;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+
+  .footer_git {
+    background: url("../../../assets/github.svg") no-repeat;
+    aspect-ratio: 50/50;
+  }
+
+  .footer_rss {
+    background: url("../../../assets/rss.svg") no-repeat;
+    aspect-ratio: 242/90;
+  }
+
+  .footer__a {
+    display: block;
+    height: 50%;
+    background-size: contain;
+  }
+}

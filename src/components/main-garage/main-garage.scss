@@ -1,0 +1,25 @@
+.main{
+  padding-bottom: 7vh;
+}
+
+.main__title{
+  font-size: 2rem;
+  margin: 1rem auto;
+}
+
+.main__page-title{
+  font-size: 1.5rem;
+  margin: 0.5rem auto;
+}
+
+.winner-button {
+  height: 100vh;
+  width: 100vw;
+  position: fixed;
+  left: 0;
+  top: 0;
+  background: $winnerButtonBackground;
+  font-size: 3rem;
+  color: $winnerButtonTextColor;
+  font-family: fantasy;
+}
