@@ -1,5 +1,23 @@
-# mdz1985-JSFE2021Q3
-Private repository for @mdz1985
+# Async Race
 
-SOME PROJECTS ARE IN <code>[mdz1985-JSFEPRESCHOOL](https://github.com/rolling-scopes-school/mdz1985-JSFEPRESCHOOL "mdz1985-JSFEPRESCHOOL") REPOSITORY!
-</code>
+This is a game where you can create a car competition.
+You can add, edit (change colour or name) and delete cars. You can also start and stop the cars
+engines. And try to drive them. Finally, you can start the competition and see the winners.
+
+## Setup and Running
+
+- Use `node 14.x` or higher.
+- Install dependencies:
+
+```bash
+    npm install
+```
+
+- Start game:
+
+```bash
+    npm run start
+```
+
+Now you can play the game here: http://localhost:8080/
+
