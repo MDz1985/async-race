@@ -7,8 +7,6 @@ const body = document.querySelector('body') as HTMLElement;
 body.append(header, garageMainElement, footerElement);
 
 console.log(`
-Приветствую тебя, о великодушный проверяющий! Благодарю за адекватный подход к проверке! Если у тебя есть замечания, огромная просьба, оставить свои контактные данные (или связаться со мной). Я всё устраню, будет работать так, как тебе нравится)).
-
 185/190
   Basic structure (+20/25 not all states saved after switch):
 (+5/5) There should be two views on the site: "Garage" and "Winners".

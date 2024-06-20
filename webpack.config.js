@@ -2,6 +2,7 @@ const path = require('path');
 const { merge } = require('webpack-merge');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const Dotenv = require('dotenv-webpack')
 
 const baseConfig = {
   entry: path.resolve(__dirname, './src/index.ts'),
@@ -74,6 +75,7 @@ const baseConfig = {
     assetModuleFilename: 'assets/[name][ext]',
   },
   plugins: [
+    new Dotenv(),
     new HtmlWebpackPlugin({
       template: path.resolve(__dirname, './src/index.html'),
       filename: 'index.html',

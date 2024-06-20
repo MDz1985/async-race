@@ -1,7 +1,9 @@
+export const apiUrl = process.env.MODE === 'production' ?  process.env.API_URL : 'http://127.0.0.1:3000';
+
 export const urlObj = {
-  garageUrl: 'http://127.0.0.1:3000/garage',
-  engineUrl: 'http://127.0.0.1:3000/engine',
-  winnersUrl: 'http://127.0.0.1:3000/winners',
+  garageUrl: `${apiUrl}/garage`,
+  engineUrl: `${apiUrl}/engine`,
+  winnersUrl: `${apiUrl}/winners`,
 };
 
 export const carsPerPageLimit = 7;
